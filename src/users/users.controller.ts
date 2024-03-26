@@ -1,4 +1,4 @@
-import { Controller, Post, Body} from '@nestjs/common';
+import { Controller, Post, Body, Request, Get, Query, ParseIntPipe} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthUserDto } from './dto/auth-user.dto';
@@ -9,11 +9,16 @@ export class UsersController {
 
   @Post("/sign_up")
   async sign_up(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.sign_up(createUserDto);
+    return this.usersService.signUp(createUserDto);
   }
 
   @Post("/sign_in")
   async sign_in(@Body() authUserDto: AuthUserDto) {
-    return this.usersService.sign_in(authUserDto);
+    return this.usersService.signIn(authUserDto);
+  }
+
+  @Get("/checkin")
+  checkIn(@Query('userId', ParseIntPipe) userId: number){
+    return this.usersService.checkIn(userId);
   }
 }
