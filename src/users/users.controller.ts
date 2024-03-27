@@ -1,24 +1,15 @@
-import { Controller, Post, Body, Request, Get, Query, ParseIntPipe} from '@nestjs/common';
+import { Controller, Get, UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { AuthUserDto } from './dto/auth-user.dto';
+import { AuthenticationGuard } from 'src/auth/guards/auth.guard';
+import { GetUser } from 'src/common/get-user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post("/sign_up")
-  async sign_up(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signUp(createUserDto);
-  }
-
-  @Post("/sign_in")
-  async sign_in(@Body() authUserDto: AuthUserDto) {
-    return this.usersService.signIn(authUserDto);
-  }
-
   @Get("/checkin")
-  checkIn(@Query('userId', ParseIntPipe) userId: number){
-    return this.usersService.checkIn(userId);
+  @UseGuards(AuthenticationGuard)
+  checkIn(@GetUser() user){
+    return this.usersService.checkIn(user);
   }
 }
