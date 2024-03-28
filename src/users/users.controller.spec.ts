@@ -17,13 +17,40 @@ describe('UsersController', () => {
     userService = module.get<UsersService>(UsersService);
   });
 
-  it('should call checkIn method of UsersService with the correct user', async () => {
-    const user = { id: 1, name: 'Test User' };
-    const checkInResult = { id: 1, workDate: new Date(), startTime: new Date(), userId: 1 };
-    
-    jest.spyOn(userService, 'checkIn').mockResolvedValue(checkInResult);
+  describe('timeKeeping', () => {
+    describe("when current user doesn't have timesheet of currentDate", () => {
+      it('checkin and return timeSheet of current date', async () => {
+        const currentUser = { id: 10, name: 'Messi' };
+        const checkInResult = {
+          id: 1,
+          workDate: new Date(),
+          startTime: new Date(),
+          userId: 10,
+        };
 
-    expect(await controller.checkIn(user)).toEqual(checkInResult);
-    expect(userService.checkIn).toHaveBeenCalledWith(user);
+        jest.spyOn(userService, 'timeKeeping').mockResolvedValue(checkInResult);
+
+        expect(await controller.timeKeeping(currentUser)).toEqual(checkInResult);
+        expect(userService.timeKeeping).toHaveBeenCalledWith(currentUser);
+      });
+    });
+
+    describe('when current user already have timesheet of currentDate', () => {
+      it('checkout and return timeSheet of current date', async () => {
+        const currentUser = { id: 10, name: 'Messi' };
+        const checkOutResult = {
+          id: 1,
+          workDate: new Date(),
+          startTime: new Date(),
+          endTime: new Date(),
+          userId: 10,
+        };
+
+        jest.spyOn(userService, 'timeKeeping').mockResolvedValue(checkOutResult);
+
+        expect(await controller.timeKeeping(currentUser)).toEqual(checkOutResult);
+        expect(userService.timeKeeping).toHaveBeenCalledWith(currentUser);
+      });
+    });
   });
 });

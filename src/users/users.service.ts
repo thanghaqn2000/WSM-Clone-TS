@@ -6,7 +6,7 @@ import { startOfDay, endOfDay } from 'date-fns';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async checkIn(user: any){
+  async timeKeeping(user: any){
     const currentDate = new Date();
     const timeSheetCurrent = await this.prisma.timeSheet.findFirst({
       where: {
@@ -21,14 +21,18 @@ export class UsersService {
     if (timeSheetCurrent) {
       return this.checkOut(timeSheetCurrent, currentDate)
     } else {
-      return this.prisma.timeSheet.create({
-        data: {
-          workDate: currentDate,
-          startTime: currentDate,
-          userId: user.id
-        }
-      });
+      return this.checkIn(currentDate, user.id)
     }
+  }
+
+  async checkIn(currentDate: Date, userId: number) {
+    return this.prisma.timeSheet.create({
+      data: {
+        workDate: currentDate,
+        startTime: currentDate,
+        userId: userId
+      }
+    });
   }
 
   async checkOut(timeSheetCurrent: any, currentDate: Date){

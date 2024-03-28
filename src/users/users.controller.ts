@@ -7,9 +7,9 @@ import { GetUser } from 'src/common/get-user.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get("/checkin")
+  @Get("/time-keeping")
   @UseGuards(AuthenticationGuard)
-  checkIn(@GetUser() user){
-    return this.usersService.checkIn(user);
+  timeKeeping(@GetUser() user){
+    return this.usersService.timeKeeping(user);
   }
 }
