@@ -14,7 +14,7 @@ model User {
   email       String   @unique
   name        String
   password    String
-  dateOfBirth DateTime?
+  dateOfBirth String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   timeSheets  TimeSheet[]
@@ -28,4 +28,7 @@ model TimeSheet {
   endTime     DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([workDate], map: "time_sheet_woking_date_index")
+  @@index([userId, workDate], map: "time_sheet_working_date_user_id_index")
 }
