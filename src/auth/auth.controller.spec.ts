@@ -36,23 +36,17 @@ describe('UsersController', () => {
   describe('register', () => {
     it('should return created user when registration is successful', async () => {
       const signUpDto = {
+        id: 13,
         name: 'test',
         email: 'test@example.com',
         password: 'password',
         dateOfBirth: '1990-01-01',
-      };
-      const createdUser = {
-        id: 13,
-        email: 'test@example.com',
-        name: 'test',
-        password: 'password',
-        dateOfBirth: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      jest.spyOn(authService, 'register').mockResolvedValue(createdUser);
+      jest.spyOn(authService, 'register').mockResolvedValue(signUpDto);
       const result = await controller.register(signUpDto);
-      expect(result).toEqual(createdUser);
+      expect(result).toEqual(signUpDto);
     });
   });
 });
