@@ -1,16 +1,30 @@
 version: 2.1
 orbs:
   node: circleci/node@5.1.0
+
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
+  build:
+    docker:
+      - image: cimg/node:20.10
+        environment:
+          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/wsm-development_test'
+      - image: cimg/postgres:16.2
+        environment:
+          -e POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: wsm-development_test
+    parallelism: 2
     steps:
       - checkout
-      - node/install-packages
       - run:
-          command: npm run test
-workflows:
-  build-and-test:
-    jobs:
-      - build-and-test
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Wait for PostgreSQL
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Run migrations
+          command: yarn prisma migrate deploy
+      - run:
+          name: Run tests
+          command: yarn test

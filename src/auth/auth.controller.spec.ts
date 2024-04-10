@@ -38,7 +38,7 @@ describe('UsersController', () => {
       const signUpDto = {
         id: 13,
         name: 'test',
-        email: 'test@example.com',
+        email: 'test@examplee.com',
         password: 'password',
         dateOfBirth: '1990-01-01',
         createdAt: new Date(),
