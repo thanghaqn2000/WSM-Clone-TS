@@ -5,11 +5,14 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/node:19
+      - image: cimg/node:20.10
         environment:
-          POSTGRES_USER: 'postgres'
-          POSTGRES_PASSWORD: 'postgres'
-          POSTGRES_DB: 'nestjs_db'
+          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/wsm-development_test'
+      - image: cimg/postgres:16.2
+        environment:
+          -e POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: wsm-development_test
     parallelism: 2
     steps:
       - checkout
