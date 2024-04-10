@@ -1,15 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { AuthPayload } from './interfaces/auth-payload.interface';
 import { SignUpDto } from './dto/sign-up.dto';
 
-
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
-  
+
   async comparePassword(
     password: string,
     storePasswordHash: string,
@@ -20,11 +19,11 @@ export class AuthService {
   async authentication(email: string, password: string): Promise<any> {
     const user = await this.prisma.user.findUnique({
       where: {
-        email: email
-      }
+        email: email,
+      },
     });
-  
-    const check = user && await bcrypt.compare(password, user.password);
+
+    const check = user && (await bcrypt.compare(password, user.password));
     return check ? user : false;
   }
 
@@ -39,9 +38,12 @@ export class AuthService {
   }
 
   async register(signUpDto: SignUpDto) {
-    const {name, password, email, dateOfBirth} = signUpDto;
+    const { name, password, email, dateOfBirth } = signUpDto;
+
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    return this.prisma.user.create({data: {name, password: hashedPassword, email, dateOfBirth}})
+    return this.prisma.user.create({
+      data: { name, password: hashedPassword, email, dateOfBirth },
+    });
   }
 }
